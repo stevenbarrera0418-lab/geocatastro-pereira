@@ -2,9 +2,13 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from typing import Optional
+from pathlib import Path
 import time
 
 app = FastAPI(title="Geocatastro Pereira API REST", version="1.0")
+
+# Ruta base del proyecto para ubicar index.html con seguridad
+BASE_DIR = Path(__file__).resolve().parent
 
 class PredioUpdate(BaseModel):
     propietario: str
@@ -101,26 +105,7 @@ def delete_afectado(afectado_id: str):
 
 @app.get("/", response_class=HTMLResponse)
 def serve_home():
-    return """
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <title>Geocatastro Pereira</title>
-        <style>
-            body { font-family: Arial, sans-serif; background-color: #f4f6f9; color: #333; text-align: center; padding: 50px; }
-            .card { background: white; max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-            h1 { color: #2c3e50; }
-            p { font-size: 16px; color: #555; }
-            .btn { display: inline-block; background: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
-        </style>
-    </head>
-    <body>
-        <div class="card">
-            <h1>Geocatastro Pereira - Sistema Activo</h1>
-            <p>La API de gestión catastral y sismológica está funcionando correctamente en Render.</p>
-            <a class="btn" href="/api/v1/predios" target="_blank">Ver Datos de Predios (API)</a>
-        </div>
-    </body>
-    </html>
-    """
+    html_file = BASE_DIR / "index.html"
+    if html_file.exists():
+        return html_file.read_text(encoding="utf-8")
+    return "<h1>Error: Falta el archivo index.html en el repositorio</h1>"
