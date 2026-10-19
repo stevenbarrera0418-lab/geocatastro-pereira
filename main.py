@@ -2,9 +2,13 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from typing import Optional
+from pathlib import Path
 import time
 
 app = FastAPI(title="Geocatastro Pereira API REST", version="1.0")
+
+# Obtener la ruta absoluta de la carpeta del proyecto
+BASE_DIR = Path(__file__).resolve().parent
 
 class PredioUpdate(BaseModel):
     propietario: str
@@ -101,8 +105,7 @@ def delete_afectado(afectado_id: str):
 
 @app.get("/", response_class=HTMLResponse)
 def serve_home():
-    try:
-        with open("index.html", "r", encoding="utf-8") as f:
-            return f.read()
-    except FileNotFoundError:
-        return "<h1>Error: Falta el archivo index.html en el repositorio</h1>"
+    html_file = BASE_DIR / "index.html"
+    if html_file.exists():
+        return html_file.read_text(encoding="utf-8")
+    return "<h1>Error: Falta el archivo index.html en el repositorio</h1>"
