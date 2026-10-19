@@ -1,9 +1,13 @@
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
+from pydantic import BaseModel
+from typing import Optional
 from pathlib import Path
+import time
+
+# PRIMERO se define app
+app = FastAPI(title="Geocatastro Pereira API REST", version="1.0")
+
 BASE_DIR = Path(__file__).resolve().parent
 
-@app.get("/", response_class=HTMLResponse)
-def serve_home():
-    html_file = BASE_DIR / "index.html"
-    if html_file.exists():
-        return html_file.read_text(encoding="utf-8")
-    return "<h1>Error: Falta el archivo index.html en el repositorio</h1>"
+# (Aquí van tus clases, bases de datos y luego las rutas con @app.get)
